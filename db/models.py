@@ -8,7 +8,7 @@ class BillItem(Base):
     __tablename__ = 'bill_items'
     id = Column(Integer, primary_key=True)
     
-    description = Column(String, nullable=False, unique=True)
+    description = Column(String, nullable=False)
     amount = Column(Float, nullable=False)
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
