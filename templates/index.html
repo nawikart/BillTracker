@@ -18,13 +18,16 @@
 
     <div class="row">
         <div class="col-7">Description</div>
-        <div class="col-auto">Amount</div>
+        <div class="col-3">Amount</div>
     </div>
 
     {% for bill in all_bills %}
-    <div class="row">
+    <div class="row mb-3">
         <div class="col-7">{{ bill.description }}</div>
-        <div class="col-auto">{{ bill.amount }}</div>
+        <div class="col-3">{{ bill.amount }}</div>
+        <div class="col-auto">
+            <a href="{{ url_for('delete', bill_id=bill.id) }}" class="btn btn-sm btn-danger">delete</a>
+        </div>
     </div>
     {% endfor %}
 

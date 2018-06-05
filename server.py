@@ -15,7 +15,14 @@ def add_bill():
 
 
     create_bill(amount, description)
-    
+
     return redirect(url_for('index'))
+
+
+@app.route('/delete_bill/<bill_id>')
+def delete(bill_id):
+    delete_bill(bill_id)
+    return redirect(url_for('index'))
+
 
 app.run(debug=True)
