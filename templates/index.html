@@ -26,6 +26,7 @@
         <div class="col-7">{{ bill.description }}</div>
         <div class="col-3">{{ bill.amount }}</div>
         <div class="col-auto">
+            <a href="{{ url_for('edit_bill', bill_id=bill.id) }}" class="btn btn-sm btn-warning">edit</a>
             <a href="{{ url_for('delete', bill_id=bill.id) }}" class="btn btn-sm btn-danger">delete</a>
         </div>
     </div>
