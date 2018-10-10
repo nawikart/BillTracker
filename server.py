@@ -1,36 +1,62 @@
-from flask import Flask, flash, session, request, redirect, render_template, url_for
-from db.data_layer import get_all_bills, get_bill, create_bill, delete_bill, update_bill
+import json
+from flask import Response
+from pprint import pprint
+
+from flask import Flask, request
+from db.data_layer import create_data, read_data, update_data, delete_data
 
 app = Flask(__name__)
 
-@app.route('/')
-def index():
-    all_bills = get_all_bills()
-    return render_template('index.html', all_bills = all_bills)
+@app.route('/create-data-api', methods=['POST'])
+def create_data_api():
+    result = create_data(request.form)
+
+    if result != None:
+        data = { 'status' : 'success' }
+    else:
+        data = { 'status' : 'error' }
+
+    resp = Response(json.dumps(data), status=200, mimetype='application/json')
+    return resp
 
 
-@app.route('/add_bill', methods=['POST'])
-def add_bill():
-    description = request.form['description']
-    amount = request.form['amount']
-    create_bill(amount, description)
-    return redirect(url_for('index'))
+@app.route('/read-data-api/<id>', methods=['GET'])
+def read_data_api(id):
+    result = read_data(id)
+
+    if result != None:
+        data = { 'status' : 'success', 'data': result }
+    else:
+        data = { 'status' : 'error' }
+
+    resp = Response(json.dumps(data), status=200, mimetype='application/json')
+    return resp
 
 
-@app.route('/delete_bill/<bill_id>')
-def delete(bill_id):
-    delete_bill(bill_id)
-    return redirect(url_for('index'))
+@app.route('/update-data-api', methods=['POST'])
+def update_data_api():
+    result = update_data(request.form['id'], request.form)
+
+    if result != None:
+        data = { 'status' : 'success' }
+    else:
+        data = { 'status' : 'error' }
+
+    resp = Response(json.dumps(data), status=200, mimetype='application/json')
+    return resp    
 
 
-@app.route('/edit_bill/<bill_id>', methods=['POST', 'GET'])
-def edit_bill(bill_id):
-    if request.method == 'POST':
-        update_bill(bill_id, request.form['amount'], request.form['description'])
-        return redirect(url_for('index'))
+@app.route('/delete-data-api', methods=['POST'])
+def delete_data_api():
+    result = delete_data(request.form['id'])
 
-    bill = get_bill(bill_id)
-    all_bills = get_all_bills()
-    return render_template('edit.html', bill = bill, all_bills = all_bills)
+    if result:
+        data = { 'status' : 'success' }
+    else:
+        data = { 'status' : 'error' }
+
+    resp = Response(json.dumps(data), status=200, mimetype='application/json')
+    return resp 
+
 
 app.run(debug=True)

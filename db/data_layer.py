@@ -1,27 +1,60 @@
 from db.base import DbManager
-from db.models import BillItem
+from db.models import System_app
+from pprint import pprint
+
 
 db = DbManager()
 
-def get_all_bills():
-    return db.open().query(BillItem).all()
+def create_data(data_obj):
+    try:
+        data = System_app()
+        data.parse_json(data_obj)
+        return db.save(data)
+    except:
+        pass
 
-def get_bill(bill_id):
-    return db.open().query(BillItem).filter(BillItem.id == bill_id).one()
+    return None
 
-def create_bill(amount, description):
-    bill = BillItem()
-    bill.amount = amount
-    bill.description = description
-    db.save(bill)
+def read_data(id):
+    try:
+        data_obj = db.open().query(System_app).filter(System_app.id == id).one()
+        data = {
+            'name': data_obj.name,
+            'api_key': data_obj.api_key,
+            'type': data_obj.type,
+            'status': data_obj.status,
+            'ip': data_obj.ip
+        }
+        return data
 
-def delete_bill(bill_id):
-    bill = db.open().query(BillItem).filter(BillItem.id == bill_id).one()
-    db.delete(bill)
+    except:
+        pass
 
-def update_bill(bill_id, amount, description):
-    bill = db.open().query(BillItem).filter(BillItem.id == bill_id).one()
-    bill.amount = amount
-    bill.description = description
-    db.save(bill)
+    return None        
 
+
+# def read_data_all():
+#     return db.open().query(System_app).all()
+
+
+def update_data(id, data_obj):
+    try:
+        data = db.open().query(System_app).filter(System_app.id == id).one()
+        data.parse_json(data_obj)
+        return db.save(data)
+    except:
+        pass
+    
+    return None
+
+def delete_data(id):
+    try:
+        data = db.open().query(System_app).filter(System_app.id == id).one()
+        db.delete(data)
+        return True
+    except:
+        pass
+    
+    return False
+
+ 
